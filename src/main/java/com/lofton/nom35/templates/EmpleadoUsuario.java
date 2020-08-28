@@ -17,7 +17,7 @@ public class EmpleadoUsuario implements Serializable {
 
     private String sex;
 
-    private Integer age;
+    private String age;
 
     private String maritalStatus;
 
@@ -45,11 +45,11 @@ public class EmpleadoUsuario implements Serializable {
         this.sex = sex;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -96,7 +96,7 @@ public class EmpleadoUsuario implements Serializable {
     public EmpleadoUsuario() {
     }
 
-    public EmpleadoUsuario(String employeeName, String sex, Integer age, String maritalStatus, String education, Integer workYears, String username, String password) {
+    public EmpleadoUsuario(String employeeName, String sex, String age, String maritalStatus, String education, Integer workYears, String username, String password) {
         this.employeeName = employeeName;
         this.sex = sex;
         this.age = age;

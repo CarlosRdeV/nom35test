@@ -353,7 +353,7 @@ public class UserController {
             theEmployee.setWorkday(theWorkday);
             theEmployee.setBranch(theBranch);
 
-            theEmployee.setAge((Integer.parseInt(empleadoLayout.getEdad())));
+            theEmployee.setAge(empleadoLayout.getEdad());
             theEmployee.setEducation(empleadoLayout.getGrado_Académico());
             theEmployee.setEmployeeName(empleadoLayout.getApellido_Paterno() + " " + empleadoLayout.getApellido_Materno() + " " + empleadoLayout.getNombre());
             theEmployee.setMaritalStatus(empleadoLayout.getEstado_Civil());

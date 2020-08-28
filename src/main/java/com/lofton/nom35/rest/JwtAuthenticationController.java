@@ -171,7 +171,6 @@ public class JwtAuthenticationController {
             theToken.setUser(theUser);
 
             tokenRepo.save(theToken);
-
         }
 
         return ResponseEntity.ok(new JwtResponse(token, theUser.getRole(), theUser.getUsername()));
@@ -394,5 +393,7 @@ public class JwtAuthenticationController {
 
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
+
+
 
 }

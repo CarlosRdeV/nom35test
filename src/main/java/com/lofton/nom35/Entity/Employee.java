@@ -47,17 +47,12 @@ public class Employee {
 
     @NotNull
     @NotEmpty(message = "Not empty")
-    @NotBlank(message = "Only chars accepted")
-    @Pattern(
-            regexp = "^(?:m|M|h|H)$",
-            message = "Only M or H") // solo hombre-mujer
-    @Column(name = "sex", columnDefinition = "varchar(1)")
+    @Column(name = "sex")
     private String sex;
 
     @NotNull
-    @Positive
     @Column(name = "age")
-    private Integer age;
+    private String age;
 
     @NotNull
     @NotEmpty(message = "Not empty")
@@ -138,12 +133,13 @@ public class Employee {
         this.sex = sex;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
+    public Employee(String employeeName, String sex, String age, String maritalStatus, String education, Integer workYears) {
+        this.employeeName = employeeName;
+        this.sex = sex;
         this.age = age;
+        this.maritalStatus = maritalStatus;
+        this.education = education;
+        this.workYears = workYears;
     }
 
     public String getMaritalStatus() {
@@ -229,16 +225,6 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String employeName, String sex, Integer age, String maritalStatus, String eduation, Boolean status, Integer workYears) {
-        this.employeeName = employeName;
-        this.sex = sex;
-        this.age = age;
-        this.maritalStatus = maritalStatus;
-        this.education = eduation;
-        this.status = status;
-        this.workYears = workYears;
-    }
-
     @Override
     public String toString() {
         return "Employee{" + "id=" + id + ", employeeName=" + employeeName + ", sex=" + sex + ", age=" + age + ", maritalStatus=" + maritalStatus + ", eduation=" + education + ", status=" + status + ", workYears=" + workYears + ", branch=" + branch + ", area=" + area + ", job=" + job + ", workday=" + workday + '}';
@@ -250,6 +236,14 @@ public class Employee {
 
     public void setEmployeeSurveys(List<EmployeeSurvey> employeeSurveys) {
         this.employeeSurveys = employeeSurveys;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
     }
 
 }
