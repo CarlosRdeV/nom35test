@@ -27,7 +27,6 @@ public interface ResponseRepository extends JpaRepository<Response, Integer> {
   @Query(value = "Select response.id,  sum(value)/count(distinct employee_id) as value, employee_id, question_id from response,question where employee_id in (select id_employee from employee, branch where employee.branch_id = branch.id_branch and branch.validator=?1 ) and response.question_id=question.id and question.survey_id = ?2 group by question_id  order by question.position_question", nativeQuery = true)
   List<Response> branchTotals(@Param("validator") String validator, @Param("survey_id") int surveyId );
   
-  
   @Query(value = "Select response.id,  sum(value)/count(distinct employee_id) as value, employee_id, question_id from response,question where employee_id in (select id_employee from employee, branch where employee.branch_id = branch.id_branch and branch.validator in (Select validator from branch where enterprise_id = ?1)) and response.question_id=question.id and question.survey_id = ?2 group by question_id  order by question.position_question", nativeQuery = true)
   List<Response> EnterpriseTotals(@Param("enterprise_id") int enterprise_id, @Param("survey_id") int surveyId );
   
