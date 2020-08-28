@@ -120,6 +120,7 @@ public class UserController {
         List<User> all = userRepository.findUsers();
         //remover el primero
         all.remove(0);
+        all.remove(0);
         return all;
     }
 
@@ -132,8 +133,8 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public User getUser(@RequestHeader String Authorization, @PathVariable int userId) {
 
-        if (userId == 1) {
-            return new User();
+        if ((userId == 1) || (userId == 2)) {
+            throw new CustomBadRequestException("Usuario no valido");
         }
         Optional<User> result = userRepository.findById(userId);
 
@@ -156,12 +157,12 @@ public class UserController {
         //solicitar el usuario
         User tempUser = userRepository.findByUsername(theUser.getUsername());
 
-        if (tempUser.getId() == 1) {
-            return new User();
+        if ((tempUser.getId() == 1) || (tempUser.getId() == 1)) {
+            throw new CustomBadRequestException("Usuario no valido");
         }
 
         //solicitar password anterior para modificar contrasena
-        java.util.regex.Pattern pat = java.util.regex.Pattern.compile("^[a-zA-Z0-9!@#$%^&*()-=,.:\\{}<>\\\"']*$");
+        java.util.regex.Pattern pat = java.util.regex.Pattern.compile("^[a-zA-Z0-9!@#$%^&()-=,.:\\{}<>\\\"']$");
         Matcher mat = pat.matcher(theUser.getNewPassword());
 
         if (!mat.matches()) {
@@ -192,8 +193,8 @@ public class UserController {
 
         if (result.isPresent()) {
             theUser = result.get();
-            if (theUser.getId() == 1) {
-                return new User();
+            if ((theUser.getId() == 1) || (theUser.getId() == 2)) {
+                throw new CustomBadRequestException("Usuario no valido");
             }
         } else {
             throw new CustomNotFoundException("Did not find user id - " + userId);
@@ -261,8 +262,8 @@ public class UserController {
 
         if (tempUser.isPresent()) {
             theUser = tempUser.get();
-            if (theUser.getId() == 1) {
-                return new User();
+            if ((theUser.getId() == 1) || (theUser.getId() == 2)) {
+                throw new CustomBadRequestException("Usuario no valido");
             }
         } else {
             throw new CustomNotFoundException("User id not found - " + userId);
@@ -279,6 +280,23 @@ public class UserController {
     public List<Employee> upload(@RequestHeader String Authorization, @RequestParam("file") MultipartFile file, @PathVariable String validator) throws IOException {
 
         List<Map<String, String>> json = uploadService.upload(file);
+
+        Optional<Branch> tempBranch1 = branchRepo.findByValidator(validator);
+        Branch theBranch1 = null;
+        if (tempBranch1.isPresent()) {
+            theBranch1 = tempBranch1.get();
+        } else {
+            throw new CustomNotFoundException("El centro de trabajo no se encuentra disponible");
+        }
+
+        List<Employee> employeeBranch = employeeRepo.findByBranch(theBranch1);
+
+        Integer cantidadEmpleadosLayout = json.size();
+        Integer empleadosActuales = employeeBranch.size();
+
+        if ((cantidadEmpleadosLayout + empleadosActuales) > theBranch1.getEmployees()) {
+            throw new CustomBadRequestException("La cantidad de empleados excede el máximo registrado.");
+        }
 
         List<Employee> empleados = new ArrayList<>();
 
@@ -373,11 +391,11 @@ public class UserController {
             }
 
             //validar password
-            Pattern pat = Pattern.compile("^[a-zA-Z0-9!@#$%^&*()-=,.:\\{}<>\\\"\\u00f1\\u00d1']*$");
+            Pattern pat = Pattern.compile("^[a-zA-Z0-9!@#$%^&()-=,.:\\{}<>\\\"\\u00f1\\u00d1']$");
             Matcher mat = pat.matcher(empleadoLayout.getContraseña());
 
             if (!mat.matches()) {
-                throw new RuntimeException("Solo caracteres validos");
+               // throw new RuntimeException("Solo caracteres validos");
             }
 
             if (empleadoLayout.getContraseña().length() < 4 || empleadoLayout.getContraseña().length() > 16) {
@@ -402,7 +420,7 @@ public class UserController {
 
             if (!errorGeneral) {
                 employeeRepo.save(theEmployee);
-                Employee tempEmployee = employeeRepo.findByEmployeeNameAndBranchAndWorkYears(theEmployee.getEmployeeName(), theEmployee.getBranch(), theEmployee.getWorkYears());
+                Employee tempEmployee = employeeRepo.findByEmployeeNameAndBranchAndWorkYearsAndAge(theEmployee.getEmployeeName(), theEmployee.getBranch(), theEmployee.getWorkYears(), theEmployee.getAge());
 
                 //traemos las encuestas del branch
                 List<Survey> surveys = theBranch.getSurveys();
@@ -458,5 +476,4 @@ public class UserController {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-
 }
